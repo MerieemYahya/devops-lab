@@ -9,3 +9,5 @@ spec:
   - name: app-cont
     image: meryemya/my-app:1.0.0
     imagePullPolicy: Always
+    ports:
+     - containerPort: 8083
