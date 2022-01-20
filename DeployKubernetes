@@ -1,0 +1,32 @@
+node{
+    stage("SCM Checkout"){
+        git branch: 'main', credentialsId: 'git-login', url: 'https://github.com/MerieemYahya/devops-lab/'
+    }
+ /*   stage("MVN package"){
+        def mvnHome = tool name: 'maven-tool' , type: 'maven'
+        def mvnCMD = "${mvnHome}/bin/mvn"
+        sh "${mvnCMD} clean package"
+    }
+    
+    stage("Build Docker Image"){
+        sh "docker build -t meryemya/my-app:1.0.0 ."
+    }  
+    
+    stage("Push Docker Image"){
+        withCredentials([string(credentialsId: 'docker-pwd', variable: 'dockerpwd')]){
+        sh "docker login -u meryemya -p ${dockerpwd}"
+        }
+        
+        sh "docker push meryem/my-app:1.0.0"
+    }
+    stage("Run Container on Dev Server"){
+        sh 'docker run -d 8082:8080 --name my-app meryemya/my-app:1.0.0'
+    }*/
+    stage("Deploy to kubernetes"){
+       withKubeConfig(caCertificate: '', clusterName: 'minikube', contextName: 'minikube', credentialsId: 'conf', namespace: '', serverUrl: 'https://172.17.0.1:8443') {
+        sh 'curl -LO "https://storage.googleapis.com/kubernetes-release/release/v1.20.5/bin/linux/amd64/kubectl"'
+        sh 'chmod u+x ./kubectl'
+        sh './kubectl apply -f pod.yml'
+} 
+    }
+}
